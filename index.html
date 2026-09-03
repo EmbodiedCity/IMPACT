@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IMPACT: Attention Is the Interaction Map for Scalable Interaction-Aware World Model Training.">
+  <title>IMPACT — Attention Is the Interaction Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css?v=20260903-10">
+</head>
+<body>
+  <nav class="glass-nav" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a class="brand" href="#home">IMPACT<span>.</span></a>
+      <div class="nav-links">
+        <a href="#abstract">Abstract</a>
+        <a href="#contributions">Contributions</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#qualitative">Gallery</a>
+        <a href="#citation">Citation</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="home">
+    <section class="hero-stage">
+      <div class="hero-inner">
+        <div class="hero-copy reveal">
+          <h1 class="hero-title">
+            <span class="hero-name">IMPACT</span>
+            <small>Attention Is the Interaction Map for<span class="hero-title-line">Scalable Interaction-Aware World Model Training</span></small>
+          </h1>
+          <p class="authors">
+            Rongze Tang<sup>1,2,*</sup>, Jianjie Fang<sup>3,*</sup>, Zhaolu Wang<sup>3</sup>, Ziyou Wang<sup>3</sup>, Xvyuan Liu<sup>3</sup>, Haisheng Su<sup>4</sup>, Xin Zhang<sup>4</sup>, Wei Wu<sup>4</sup>, Chen Gao<sup>2,3,&dagger;</sup>, Yong Li<sup>3</sup>, Zhibo Chen<sup>1,2,&dagger;</sup>
+          </p>
+          <p class="affiliations"><sup>1</sup>USTC &nbsp; <sup>2</sup>Zhongguancun Academy &nbsp; <sup>3</sup>Tsinghua University &nbsp; <sup>4</sup>Manifold AI</p>
+          <p class="author-note">* Equal contribution &nbsp; &dagger; Corresponding authors</p>
+
+          <div class="hero-links" aria-label="Project resources">
+            <a class="hero-resource" href="https://arxiv.org/pdf/2609.00161" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v5h5M9 13h6M9 17h6"/></svg>Paper
+            </a>
+            <a class="hero-resource" href="https://arxiv.org/abs/2609.00161" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9.5 6M9 18l5-12M14.5 6 20 18M6.2 13h11.6"/></svg>arXiv
+            </a>
+            <a class="hero-resource" href="https://github.com/EmbodiedCity/IMPACT.code" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18 3 12l6-6M15 6l6 6-6 6M14 3l-4 18"/></svg>Code
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="abstract" class="section">
+      <div class="section-header reveal compact-header">
+        <div class="section-marker"><span>01</span> Abstract</div>
+      </div>
+      <div class="abstract-grid reveal">
+        <div class="abstract-copy">
+          <p>World models have made remarkable progress in action-conditioned future prediction for embodied agents, yet still struggle to model physically plausible interactions. Existing approaches address this limitation by constraining generation with external representations encoding motion, geometry, or semantics, whose construction depends on auxiliary estimators or manual annotations.</p>
+          <p>We identify a <strong>supervision-allocation mismatch</strong> under the globally averaged MSE denoising objective: prevalent static content dominates optimization, while sparse dynamic-object regions are disproportionately under-supervised. IMPACT uses manipulated-object cross-attention as an internal spatiotemporal prior, calibrates sampled candidates with detached local prediction errors, and targets denoising supervision with the resulting interaction map.</p>
+        </div>
+        <figure class="abstract-figure interactive" data-lightbox="IMPACT overview">
+          <img src="static/images/overview.png" alt="IMPACT overview">
+        </figure>
+      </div>
+    </section>
+
+    <section id="contributions" class="section section-tint">
+      <div class="section-header reveal">
+        <div class="section-marker"><span>02</span> Contributions</div>
+        <h2 class="section-title">Attention Is the Interaction Map.</h2>
+      </div>
+      <div class="contribution-tabs reveal" role="tablist" aria-label="Contributions">
+        <button class="contribution-tab active" type="button" role="tab" data-contribution="mismatch" aria-selected="true"><b>01</b><span>Supervision mismatch</span></button>
+        <button class="contribution-tab" type="button" role="tab" data-contribution="scaling" aria-selected="false"><b>02</b><span>Scalable prior</span></button>
+        <button class="contribution-tab" type="button" role="tab" data-contribution="targeting" aria-selected="false"><b>03</b><span>Calibrate &amp; target</span></button>
+      </div>
+
+      <div class="contribution-stage reveal">
+        <article class="contribution-panel active" data-panel="mismatch">
+          <div class="contribution-copy">
+            <span class="contribution-number">01 — PROBLEM</span>
+            <h3>Uniform supervision spends gradient on what is abundant.</h3>
+            <p>Standard MSE spreads its signal across the frame. IMPACT reallocates supervision toward sparse object motion and contact.</p>
+          </div>
+          <div class="mismatch-matrix">
+            <div class="mismatch-head"><span></span><b>Ground Truth</b><b>Standard MSE</b><b>IMPACT</b></div>
+            <div class="mismatch-row">
+              <div class="case-label"><span>Robot arm</span><strong>Stacking blocks</strong></div>
+              <figure class="media-tile interactive" data-lightbox="Ground truth · Stacking blocks"><img src="static/media/mismatch/arm_blocks_gt.jpg" alt="Ground truth stacking blocks"></figure>
+              <figure class="media-tile interactive" data-lightbox="Standard MSE · Stacking blocks"><img src="static/media/mismatch/arm_blocks_mse.jpg" alt="Standard MSE stacking blocks"></figure>
+              <figure class="media-tile impact-tile interactive" data-lightbox="IMPACT · Stacking blocks"><img src="static/media/mismatch/arm_blocks_impact.jpg" alt="IMPACT stacking blocks"></figure>
+            </div>
+            <div class="mismatch-row">
+              <div class="case-label"><span>Human hand</span><strong>White box</strong></div>
+              <figure class="media-tile interactive" data-lightbox="Ground truth · White box"><img src="static/media/mismatch/hand_box_gt.jpg" alt="Ground truth white box"></figure>
+              <figure class="media-tile interactive" data-lightbox="Standard MSE · White box"><img src="static/media/mismatch/hand_box_mse.jpg" alt="Standard MSE white box"></figure>
+              <figure class="media-tile impact-tile interactive" data-lightbox="IMPACT · White box"><img src="static/media/mismatch/hand_box_impact.jpg" alt="IMPACT white box"></figure>
+            </div>
+          </div>
+        </article>
+
+        <article class="contribution-panel" data-panel="scaling" hidden>
+          <div class="contribution-copy">
+            <span class="contribution-number">02 — SCALING</span>
+            <h3>An internal prior replaces dense preprocessing.</h3>
+            <p>Object-token grounding is the base unit. Optical flow, point tracking, depth, segmentation, and 3D reconstruction add 18×–142× preprocessing cost.</p>
+          </div>
+          <div class="cost-chart" role="img" aria-label="Relative data preprocessing cost: optical flow 26 times, point tracking 72 times, depth 40 times, segmentation mask 18 times, 3D mesh 142 times, ours with object token grounding 1 time">
+            <div class="chart-axis"><span>160</span><span>120</span><span>80</span><span>40</span><span>0</span></div>
+            <div class="chart-plot">
+              <div class="cost-item"><b>26×</b><i style="--bar:16.25%;--bar-color:#83b4d4"></i><span>Optical flow<small>RAFT</small></span></div>
+              <div class="cost-item"><b>72×</b><i style="--bar:45%;--bar-color:#5fa9db"></i><span>Point track<small>CoTracker3</small></span></div>
+              <div class="cost-item"><b>40×</b><i style="--bar:25%;--bar-color:#5296c4"></i><span>Depth<small>DepthAnything V2</small></span></div>
+              <div class="cost-item"><b>18×</b><i style="--bar:11.25%;--bar-color:#f4ae3c"></i><span>Seg. mask<small>SAM2 / SAM3</small></span></div>
+              <div class="cost-item"><b>142×</b><i style="--bar:88.75%;--bar-color:#cc4334"></i><span>3D mesh<small>SAM 3D Body</small></span></div>
+              <div class="cost-item ours-cost"><b>1×</b><i style="--bar:.625%;--bar-color:#1fab5b"></i><span>Ours<small>Object token grounding</small></span></div>
+            </div>
+            <div class="chart-title">Relative data preprocessing cost</div>
+          </div>
+        </article>
+
+        <article class="contribution-panel" data-panel="targeting" hidden>
+          <div class="contribution-copy">
+            <span class="contribution-number">03 — CALIBRATE &amp; TARGET</span>
+            <h3>ADS sharpens the prior; IWS delivers the gradient.</h3>
+            <p>Each video presents the complete path from input and attention prior to the ADS interaction map and IWS relative gain.</p>
+          </div>
+          <div class="attention-video-board">
+            <div class="attention-columns"><b>Input</b><b>Attention Prior A</b><b>ADS Interaction Map G</b><b>IWS Relative Gain</b></div>
+            <div class="attention-case-grid">
+            <figure class="video-card">
+              <video autoplay muted loop playsinline preload="metadata" poster="static/media/attention/arm_blocks.jpg"><source src="static/media/attention/arm_blocks.mp4" type="video/mp4"></video>
+              <figcaption>Robot arm · Stacked blocks</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video autoplay muted loop playsinline preload="metadata" poster="static/media/attention/arm_bread.jpg"><source src="static/media/attention/arm_bread.mp4" type="video/mp4"></video>
+              <figcaption>Robot arm · Bread and skillet</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video autoplay muted loop playsinline preload="metadata" poster="static/media/attention/hand_wrap.jpg"><source src="static/media/attention/hand_wrap.mp4" type="video/mp4"></video>
+              <figcaption>Human hand · Plastic wrap</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video autoplay muted loop playsinline preload="metadata" poster="static/media/attention/hand_book.jpg"><source src="static/media/attention/hand_book.mp4" type="video/mp4"></video>
+              <figcaption>Human hand · Red book</figcaption>
+            </figure>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="method" class="section">
+      <div class="section-header reveal">
+        <div class="section-marker"><span>03</span> Method</div>
+        <h2 class="section-title">Calibrate in the forward pass.<br><span>Target in the backward pass.</span></h2>
+      </div>
+
+      <div class="method-demo reveal">
+        <div class="method-timeline" role="tablist" aria-label="IMPACT training stages">
+          <button class="method-step active" type="button" data-stage="0"><i>01</i><span>Ground</span></button>
+          <button class="method-step" type="button" data-stage="1"><i>02</i><span>Encode</span></button>
+          <button class="method-step" type="button" data-stage="2"><i>03</i><span>Attend</span></button>
+          <button class="method-step" type="button" data-stage="3"><i>04</i><span>Calibrate</span></button>
+          <button class="method-step" type="button" data-stage="4"><i>05</i><span>Target</span></button>
+          <span class="timeline-progress" aria-hidden="true"><span></span></span>
+        </div>
+        <div class="method-canvas" data-stage="0">
+          <object id="method-svg-object" type="image/svg+xml" data="static/media/method_stages/stage_0.svg?v=20260903-5" aria-label="IMPACT method framework">
+            <img src="static/media/method_framework.png" alt="IMPACT method framework">
+          </object>
+        </div>
+        <div class="method-caption"><b>Object-token grounding</b><span>Identify “blue bowl” as the manipulated object.</span></div>
+      </div>
+    </section>
+
+    <section id="results" class="section section-tint">
+      <div class="section-header reveal">
+        <div class="section-marker"><span>04</span> Results</div>
+        <h2 class="section-title">Consistent across backbones and control signals.<br><span>Effective across embodiments.</span></h2>
+      </div>
+
+      <div class="metric-grid reveal">
+        <article class="metric-card"><span>WorldArena</span><strong>62.53</strong><small>EWMScore · Cosmos + IMPACT</small></article>
+        <article class="metric-card"><span>WorldArena</span><strong>+3.81</strong><small>EWMScore · Wan 2.2-AC</small></article>
+        <article class="metric-card"><span>EgoDex</span><strong>110.94</strong><small>FVD ↓</small></article>
+        <article class="metric-card"><span>EgoDex</span><strong>0.772</strong><small>Hand IoU ↑</small></article>
+      </div>
+
+      <div class="results-block reveal">
+        <div class="results-heading"><h3>Robot-arm manipulation</h3><span>WorldArena</span></div>
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead><tr><th>Model</th><th>EWMScore</th><th>Visual</th><th>Motion</th><th>Content</th><th>Physics</th><th>3D</th><th>Control</th></tr></thead>
+            <tbody>
+              <tr><td>Wan 2.6</td><td>61.86</td><td class="best">61.62</td><td class="best">68.31</td><td>60.36</td><td>42.31</td><td>75.88</td><td>60.85</td></tr>
+              <tr><td>CtrlWorld</td><td>59.70</td><td>55.33</td><td>50.28</td><td>63.99</td><td>54.89</td><td>86.30</td><td>54.65</td></tr>
+              <tr><td>WoW</td><td>54.88</td><td>52.98</td><td>50.02</td><td>64.52</td><td>38.11</td><td>74.77</td><td>49.89</td></tr>
+              <tr><td>Wan 2.2-AC</td><td>58.65</td><td>56.57</td><td>48.23</td><td>60.55</td><td>53.41</td><td>86.16</td><td>54.40</td></tr>
+              <tr class="impact-row"><td>Wan 2.2-AC + IMPACT</td><td>62.46</td><td>60.60</td><td>53.28</td><td>60.29</td><td class="best">55.87</td><td class="best">92.56</td><td>60.00</td></tr>
+              <tr><td>Cosmos-Predict 2.5 (action)</td><td>55.91</td><td>57.87</td><td>38.89</td><td>68.73</td><td>42.23</td><td>82.53</td><td>49.51</td></tr>
+              <tr class="impact-row"><td>Cosmos-Predict 2.5 (action) + IMPACT</td><td class="best">62.53</td><td>56.32</td><td>68.22</td><td>57.90</td><td>41.82</td><td>77.99</td><td class="best">71.19</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="results-pair reveal">
+        <div class="results-block">
+          <div class="results-heading"><h3>Human-hand manipulation</h3><span>EgoDex</span></div>
+          <div class="results-table-wrap">
+            <table class="results-table compact">
+              <thead><tr><th>Model</th><th>FVD ↓</th><th>FID ↓</th><th>CLIP-Hand ↑</th><th>Hand IoU ↑</th></tr></thead>
+              <tbody>
+                <tr><td>VACE</td><td>358.42</td><td>50.65</td><td>0.895</td><td>0.493</td></tr>
+                <tr><td>Wan 2.2-AC</td><td>366.12</td><td>44.71</td><td>0.921</td><td>0.693</td></tr>
+                <tr class="impact-row"><td>Wan 2.2-AC + IMPACT</td><td class="best">110.94</td><td class="best">5.79</td><td class="best">0.952</td><td class="best">0.772</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="results-block">
+          <div class="results-heading"><h3>Component ablation</h3><span>WorldArena</span></div>
+          <div class="results-table-wrap">
+            <table class="results-table compact">
+              <thead><tr><th>Configuration</th><th>EWMScore</th><th>Visual</th><th>Motion</th><th>Physics</th></tr></thead>
+              <tbody>
+                <tr><td>Wan 2.2-AC</td><td>58.65</td><td>56.57</td><td>48.23</td><td>53.41</td></tr>
+                <tr><td>+ IWS</td><td>61.54</td><td>60.44</td><td>49.16</td><td>55.16</td></tr>
+                <tr class="impact-row"><td>+ IWS + ADS</td><td class="best">62.46</td><td class="best">60.60</td><td class="best">53.28</td><td class="best">55.87</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="qualitative" class="section">
+      <div class="section-header reveal">
+        <div class="section-marker"><span>05</span> Gallery</div>
+        <h2 class="section-title">Contact stays coherent.<br><span>Objects follow the action.</span></h2>
+      </div>
+
+      <div class="gallery-matrices reveal">
+        <section class="comparison-group">
+          <div class="comparison-group-title"><span>Robot arm</span><h3>WorldArena</h3></div>
+          <div class="comparison-scroll">
+            <div class="comparison-matrix" id="robot-gallery-matrix"></div>
+          </div>
+        </section>
+
+        <section class="comparison-group">
+          <div class="comparison-group-title"><span>Human hand</span><h3>EgoDex</h3></div>
+          <div class="comparison-scroll">
+            <div class="comparison-matrix" id="human-gallery-matrix"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="citation-block" id="citation">
+      <div class="citation-inner reveal">
+        <div class="citation-head">
+          <div class="section-marker"><span>06</span> Citation</div>
+          <button class="copy-button" type="button" id="citation-copy">Copy</button>
+        </div>
+        <pre id="citation-text">@article{tang2026impact,
+  title  = {IMPACT: Attention Is the Interaction Map for Scalable Interaction-Aware World Model Training},
+  author = {Tang, Rongze and Fang, Jianjie and Wang, Zhaolu and Wang, Ziyou and Liu, Xvyuan and Su, Haisheng and Zhang, Xin and Wu, Wei and Gao, Chen and Li, Yong and Chen, Zhibo},
+  journal = {arXiv preprint arXiv:2609.00161},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2609.00161}
+}</pre>
+      </div>
+    </section>
+  </main>
+
+  <footer>IMPACT · Attention Is the Interaction Map</footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Expanded figure">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close figure">×</button>
+      <img id="lightbox-image" src="" alt="">
+    </div>
+  </div>
+
+  <script src="static/js/main.js?v=20260903-9"></script>
+</body>
+</html>
