@@ -153,7 +153,7 @@
         methodTimer = setInterval(() => {
           if (currentStage < methodStages.length - 1) setMethodStage(currentStage + 1);
           else clearInterval(methodTimer);
-        }, 3200);
+        }, 1800);
       }
     }
   };
@@ -169,7 +169,7 @@
           methodTimer = setInterval(() => {
             if (currentStage < methodStages.length - 1) setMethodStage(currentStage + 1);
             else clearInterval(methodTimer);
-          }, 3200);
+          }, 1800);
         }
       });
     }, { threshold: 0.18 });
@@ -178,7 +178,7 @@
     methodTimer = setInterval(() => {
       if (currentStage < methodStages.length - 1) setMethodStage(currentStage + 1);
       else clearInterval(methodTimer);
-    }, 3200);
+    }, 1800);
   }
 
   document.querySelectorAll('.interactive').forEach(bindLightbox);
